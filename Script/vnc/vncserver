@@ -33,3 +33,5 @@ if [ ${RELEASE} == "16.04" ]; then
 else
   tigervncserver -localhost no $@
 fi
+
+vnc-pwdgen

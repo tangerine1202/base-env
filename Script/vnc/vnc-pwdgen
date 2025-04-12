@@ -10,3 +10,13 @@ printf "Random Generated VNC Password: ${BF}${PW}${CC}\n"
 echo ${PW} | /usr/bin/tigervncpasswd -f > ${HOME}/.vnc/passwd
 
 chmod 600 ${HOME}/.vnc/passwd
+
+# NOTE: workaroundk to replace the passwd, since we cannot assign the path of PasswordFile in new tigervncserver
+for dir in $(find /tmp -maxdepth 1 -type d -name 'tigervnc.*' -user "$USER"); do
+    if [ -f "$dir/passwd" ]; then
+        cp "$HOME/.vnc/passwd" "$dir/passwd"
+        # echo "Replace the passwd of $dir"
+    else
+        echo "No passwd file found in $dir"
+    fi
+done
