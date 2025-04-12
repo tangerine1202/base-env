@@ -18,6 +18,7 @@ curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-contai
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 
+# NOTE: this line break the new version nvidia-container-toolkit
 # Change the user who execute nvidia-container-toolkit
 # Reference: https://askubuntu.com/a/1319123
-sudo sed -i 's/^#user.*/user = "root:vglusers"/' /etc/nvidia-container-runtime/config.toml
+# sudo sed -i 's/^#user.*/user = "root:vglusers"/' /etc/nvidia-container-runtime/config.toml
