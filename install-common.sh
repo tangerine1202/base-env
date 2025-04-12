@@ -10,7 +10,7 @@
 # https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 set -u
 
-REPO_LINK="https://github.com/elsa-lab/base-env"
+REPO_LINK="https://github.com/tangerine1202/base-env"
 INSTALL_PATH="/opt/base-env"
 MOTD_PATH="/etc/update-motd.d"
 BIN_PATH="/usr/local/bin"
@@ -49,8 +49,8 @@ sudo git clone "${REPO_LINK}" "${INSTALL_PATH}"
 #
 # Reference:
 # https://stackoverflow.com/a/16068840
-(sudo crontab -u root -l; echo "0 0 * * * cd ${INSTALL_PATH}; git pull") |
-  sudo crontab -u root - 
+# (sudo crontab -u root -l; echo "0 0 * * * cd ${INSTALL_PATH}; git pull") |
+#   sudo crontab -u root -
 
 #=====================================================================
 # Part I: Package
@@ -64,9 +64,9 @@ cd ${INSTALL_PATH}/Package
 
 ./Dependency/install-essential.sh
 ./Dependency/install-docker.sh
-./Dependency/install-mujoco-roboti.sh
-./Dependency/install-mujoco-deepmind.sh
-./Dependency/install-python36-37.sh 
+# ./Dependency/install-mujoco-roboti.sh
+# ./Dependency/install-mujoco-deepmind.sh
+# ./Dependency/install-python36-37.sh # Use global uv instead
 
 # Service
 ./Dependency/install-fail2ban.sh
@@ -135,7 +135,7 @@ sudo chmod +x ${MOTD_PATH}/98-fsck-at-reboot
 sudo chmod +x ${MOTD_PATH}/98-reboot-required
 
 # Install customized motds
-sudo ln -fns $(pwd)/motd/fest-welcome ${MOTD_PATH}/02-fest-welcome
+# sudo ln -fns $(pwd)/motd/fest-welcome ${MOTD_PATH}/02-fest-welcome
 sudo ln -fns $(pwd)/server_status/hdd-status ${MOTD_PATH}/51-hdd-status
 sudo ln -fns $(pwd)/server_status/gpu-status ${MOTD_PATH}/52-gpu-status
 sudo ln -fns $(pwd)/server_status/vnc-status ${MOTD_PATH}/53-vnc-status

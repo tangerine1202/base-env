@@ -48,7 +48,7 @@ sudo apt install -y ffmpeg \
                     libsdl-image1.2-dev
 
 # python3 related libraries
-sudo apt install -y python3-virtualenv \
-                    python3-dev \
-                    python3-tk
+# sudo apt install -y python3-virtualenv \
+#                     python3-dev \
+#                     python3-tk
 
