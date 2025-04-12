@@ -11,10 +11,6 @@ sudo -v
 UBUNTU_CODENAME=$(. /etc/os-release; echo $VERSION_CODENAME) # Ubuntu codename: noble (24.04)$
 UBUNTU_NUMBER=$(. /etc/os-release; echo $VERSION_ID) # Ubuntu release number: 24.04 (noble)$
 
-echo $UBUNTU_CODENAME $UBUNTU_NUMBER $VERSION_STRING
-
-exit 0
-
 # uninstall old versions
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 containerd runc;
   do sudo apt remove $pkg;
@@ -45,6 +41,9 @@ sudo apt install \
 
 # start docker
 sudo systemctl enable --now docker
+
+# create the docker group
+sudo getent group docker || sudo groupadd docker
 
 # add current user to docker group
 sudo usermod -aG docker ${USER}
