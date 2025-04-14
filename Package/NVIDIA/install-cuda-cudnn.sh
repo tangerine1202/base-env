@@ -117,11 +117,15 @@ install () {
 #   "https://developer.download.nvidia.com/compute/cuda/12.2.1/local_installers/cuda_12.2.1_535.86.10_linux.run" \
 #   "cudnn-linux-x86_64-8.9.6.50_cuda12-archive.tar.xz"
 
-install "12.4" "8.9.7" \
-  "https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run" \
-  "cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz"
+# install "12.4" "8.9.7" \
+#   "https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run" \
+#   "cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz"
+
+install "12.8" "9.8.0" \
+  "https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run" \
+  "https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.8.0.87_cuda12-archive.tar.xz"
 
 # default cuda version
-ln -fns /usr/local/cuda-12.4 ~/.cuda
-sudo ln -fns /usr/local/cuda-12.4 /etc/skel/.cuda
+ln -fns /usr/local/cuda-12.8 ~/.cuda
+sudo ln -fns /usr/local/cuda-12.8 /etc/skel/.cuda
 
