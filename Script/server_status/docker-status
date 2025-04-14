@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+NAME_ARG="%-14s"
+ID_ARG="%-10s"
+# IMAGE_ARG="%-35s"
+# STATUS_ARG="%-28s"
+SHORT_ARG="%-14s"
+PORTS_ARG="%-50s"
+
+# Colors
+UNDERLINE="\033[4m"
+RESET="\033[0m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RED="\033[31m"
+
+# Header
+printf "\n"
+printf "  "
+printf "${UNDERLINE}"
+printf "${NAME_ARG}" "NAME"
+printf "${ID_ARG}" "ID"
+# printf "${IMAGE_ARG}" "IMAGE"
+# printf "${STATUS_ARG}" "STATUS (FULL)"
+printf "${SHORT_ARG}" "STATUS"
+printf "${PORTS_ARG}" "PORTS"
+printf "${RESET}"
+printf "\n"
+
+# Main
+docker ps --format '{{json .}}' | while read -r json; do
+  id=$(echo "$json" | jq -r .ID)
+  image=$(echo "$json" | jq -r .Image)
+  status=$(echo "$json" | jq -r .Status)
+  ports=$(echo "$json" | jq -r .Ports)
+  name=$(echo "$json" | jq -r .Names)
+
+  # Determine short status
+  if [[ "$status" == *"Up"* && "$status" == *"unhealthy"* ]]; then
+    short_status="Unhealthy"
+    COLOR=$YELLOW
+  elif [[ "$status" == *"Up"* ]]; then
+    short_status="Up"
+    COLOR=$GREEN
+  elif [[ "$status" == *"Paused"* ]]; then
+    short_status="Paused"
+    COLOR=$YELLOW
+  elif [[ "$status" == *"Restarting"* ]]; then
+    short_status="Restarting"
+    COLOR=$RED
+  elif [[ "$status" == *"Exited"* ]]; then
+    short_status="Exited"
+    COLOR=$RESET
+  else
+    short_status="Unknown"
+    COLOR=$YELLOW
+  fi
+
+  # Print
+  printf "  "
+  printf "${NAME_ARG}" "$name"
+  printf "${ID_ARG}" "${id:0:8}"
+  # printf "${IMAGE_ARG}" "$image"
+  # printf "${COLOR}${STATUS_ARG}${RESET}" "$status"
+  printf "${COLOR}${SHORT_ARG}${RESET}" "$short_status"
+  printf "${PORTS_ARG}" "$ports"
+  printf "\n"
+done
+
+exit 0
