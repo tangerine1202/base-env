@@ -28,7 +28,7 @@ printf "${RESET}"
 printf "\n"
 
 # Main
-docker ps --format '{{json .}}' | while read -r json; do
+docker ps -a --format '{{json .}}' | while read -r json; do
   id=$(echo "$json" | jq -r .ID)
   image=$(echo "$json" | jq -r .Image)
   status=$(echo "$json" | jq -r .Status)
