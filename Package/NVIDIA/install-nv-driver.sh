@@ -8,7 +8,7 @@ set -euo pipefail
 cd /tmp
 
 # useful variables
-DRIVER_VERSION="570.133.07" # CUDA Version: 12.4
+DRIVER_VERSION="570.153.02" # CUDA Version: 12.4
 DRIVER_INSTALLER="NVIDIA-Linux-x86_64-${DRIVER_VERSION}.run"
 DRIVER_LINK="http://us.download.nvidia.com/XFree86/Linux-x86_64/${DRIVER_VERSION}/${DRIVER_INSTALLER}"
 
@@ -40,34 +40,40 @@ if echo $services | grep -Fq 'lightdm'; then
   echo "Done."
 fi
 
+# stop nvidai-persistenced
+if systemctl is-active --quiet nvidia-persistenced; then
+  printf "Stopping nvidia-persistenced... "
+  sudo systemctl stop nvidia-persistenced
+  echo "Done."
+fi
+
 # install NVIDIA driver
 printf "Installing NVIDIA driver ${DRIVER_VERSION}... "
 sudo ./"${DRIVER_INSTALLER}" --silent --dkms --no-cc-version-check
 echo "Done."
 
-# enable persistence mode
-sudo /usr/bin/nvidia-smi -pm 1
+# restart or install nvidia-persistenced
+if systemctl list-unit-files | grep -q nvidia-persistenced; then
+  printf "Restarting nvidia-persistenced... "
+  sudo systemctl restart nvidia-persistenced
+  echo "Done."
+else
+  echo "nvidia-persistenced not found. Installing nvidia-persistenced ..."
 
-# enable persistence-mode on start up
-if ! grep -q "nvidia-smi" /etc/rc.local; then
-  if [ ! -f /etc/rc.local ]; then
-    echo '#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
+  NV_PERSISTENCED_TAR="/usr/share/doc/NVIDIA_GLX-1.0/samples/nvidia-persistenced-init.tar.bz2"
+  NV_PERSISTENCED_DIR="nvidia-persistenced-init"
 
-exit 0' | sudo tee /etc/rc.local
-    sudo chmod +x /etc/rc.local
+  if [ -f "$NV_PERSISTENCED_TAR" ]; then
+    printf "Installing nvidia-persistenced... "
+    tar -xf $NV_PERSISTENCED_TAR -C .
+    cd $NV_PERSISTENCED_DIR
+    sudo ./install.sh
+    cd ..
+    echo "Done."
+  else
+    echo "Warning: nvidia-persistenced init scripts not found at $NV_PERSISTENCED_TAR"
+    echo "You may need to install nvidia-persistenced manually."
   fi
-  sudo sed -i -e '$i /usr/bin/nvidia-smi -pm 1\n' /etc/rc.local
 fi
 
 # restart lightdm
