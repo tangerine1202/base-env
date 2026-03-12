@@ -8,7 +8,7 @@ set -euo pipefail
 cd /tmp
 
 # useful variables
-DRIVER_VERSION="550.144.03" # CUDA Version: 12.4
+DRIVER_VERSION="590.48.01" # CUDA Version: 12.4
 DRIVER_INSTALLER="NVIDIA-Linux-x86_64-${DRIVER_VERSION}.run"
 DRIVER_LINK="http://us.download.nvidia.com/XFree86/Linux-x86_64/${DRIVER_VERSION}/${DRIVER_INSTALLER}"
 
@@ -32,13 +32,16 @@ curl -sSL "${DRIVER_LINK}" -o "${DRIVER_INSTALLER}"
 chmod +x "${DRIVER_INSTALLER}"
 echo "Done."
 
-#stop lightdm
+# stop lightdm
 services=$(service --status-all | grep '+' || true)
 if echo $services | grep -Fq 'lightdm'; then
   printf "Stopping lightdm... "
   sudo service lightdm stop
   echo "Done."
 fi
+
+# stop persistence mode 
+sudo /usr/bin/nvidia-smi -pm 0
 
 # install NVIDIA driver
 printf "Installing NVIDIA driver ${DRIVER_VERSION}... "
